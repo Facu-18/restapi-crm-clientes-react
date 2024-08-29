@@ -1,8 +1,13 @@
 import React, { Fragment, useState } from 'react';
-import clienteAxios from '../../config/axios.js'
+import Swal from 'sweetalert2';
+import {useNavigate} from 'react-router-dom'
 import clientesAxios from '../../config/axios.js';
 
-function NuevoCliente() {
+
+function NuevoCliente({history}) {
+ 
+    // ROUTE
+    const navigate = useNavigate()
 
     // cliente = state, guardarCliente = funcion para guardar el state
     const [cliente, guardarCliente] = useState({
@@ -63,20 +68,37 @@ function NuevoCliente() {
     }
 
     // añade en la restapi el cliente
-    const agregarCliente = e =>{
+    const agregarCliente = async (e) => {
         e.preventDefault();
 
-        // enviar peticion
-        clientesAxios.post('/clientes', cliente)
-        .then(res=>{
-            // validar si hay errores de mongodb
-            if(res.data.code === 11000){
-                console.log('error duplicado de mongo')
-            }else{
-                console.log(res.data)
+        try {
+            const res = await clientesAxios.post('/clientes', cliente);
+            Swal.fire({
+                title: "Se agregó el Cliente!",
+                text: res.data.mensaje,
+                icon: "success"
+            });
+            
+            // Redireccionar
+            navigate('/')
+        
+        } catch (error) {
+            if (error.response && error.response.data.errors) {
+                const errorMessages = error.response.data.errors.map(err => err.msg).join('\n');
+                Swal.fire({
+                    title: "Error!",
+                    text: errorMessages,
+                    icon: "error"
+                });
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Hubo un problema al agregar el cliente",
+                    icon: "error"
+                });
             }
-        })
-    }
+        }
+    };
 
     // validar formulario
     const validarCliente = () => {
@@ -154,4 +176,6 @@ function NuevoCliente() {
     )
 }
 
-export default NuevoCliente
+
+// HOC, funcion que toma un componente y retorna un nuevo componente
+export default  NuevoCliente
