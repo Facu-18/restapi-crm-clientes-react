@@ -1,22 +1,38 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import clientesAxios from '../../config/axios.js';
 
 
-function NuevoCliente() {
+
+function EditarCliente(props) {
  
+    const { id } = useParams();
+    console.log(id)
+
     // ROUTE
     const navigate = useNavigate()
 
     // cliente = state, guardarCliente = funcion para guardar el state
-    const [cliente, guardarCliente] = useState({
+    const [cliente, datosCliente] = useState({
         nombre: '',
         apellido: '',
         empresa: '',
         email: '',
         telefono: ''
     })
+
+    // query a la api
+    const consultarAPI = async ()=>{
+        const clienteConsulta = await clientesAxios.get(`/clientes/${id}`)
+
+        // colocar datos del cliente en el state
+        datosCliente(clienteConsulta.data)
+    }   
+
+    useEffect(()=>{
+        consultarAPI();
+    }, [])
 
     // Funciones de sanitización
     const sanitizeText = (text) => {
@@ -58,7 +74,7 @@ function NuevoCliente() {
 
 
         // Almacenar los datos sanitizados en el state
-        guardarCliente({
+        datosCliente({
             // obtener copia del state acutal
             ...cliente,
             [name]: sanitizedValue
@@ -68,13 +84,16 @@ function NuevoCliente() {
     }
 
     // añade en la restapi el cliente
-    const agregarCliente = async (e) => {
+
+
+    const actualizarCliente = async (e)=>{
         e.preventDefault();
 
+        //enviar peticion por axios
         try {
-            const res = await clientesAxios.post('/clientes', cliente);
+            const res = await clientesAxios.put(`/clientes/${cliente._id}`, cliente);
             Swal.fire({
-                title: "Se agregó el Cliente!",
+                title: "Cambios guardados correctamente!",
                 text: res.data.mensaje,
                 icon: "success"
             });
@@ -93,12 +112,13 @@ function NuevoCliente() {
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: "Hubo un problema al agregar el cliente",
+                    text: "Hubo un problema al guardar los cambios",
                     icon: "error"
                 });
             }
         }
     };
+
 
     // validar formulario
     const validarCliente = () => {
@@ -113,10 +133,10 @@ function NuevoCliente() {
 
     return (
         <Fragment>
-            <h2>Nuevo Cliente</h2>
+            <h2>Editar Cliente</h2>
 
             <form
-                onSubmit={agregarCliente}
+                onSubmit={actualizarCliente}
             >
                 <legend>Llena todos los campos</legend>
 
@@ -125,7 +145,8 @@ function NuevoCliente() {
                     <input type="text"
                         placeholder="Nombre Cliente"
                         name="nombre"
-                        onChange={actualizarState} />
+                        onChange={actualizarState} 
+                        value={cliente.nombre}/>
 
                 </div>
 
@@ -135,6 +156,7 @@ function NuevoCliente() {
                         placeholder="Apellido Cliente"
                         name="apellido"
                         onChange={actualizarState}
+                        value={cliente.apellido}
                     />
                 </div>
 
@@ -143,7 +165,8 @@ function NuevoCliente() {
                     <input type="text"
                         placeholder="Empresa Cliente"
                         name="empresa"
-                        onChange={actualizarState} />
+                        onChange={actualizarState} 
+                        value={cliente.empresa}/>
                 </div>
 
                 <div className="campo">
@@ -151,7 +174,8 @@ function NuevoCliente() {
                     <input type="email"
                         placeholder="Email Cliente"
                         name="email"
-                        onChange={actualizarState} />
+                        onChange={actualizarState} 
+                        value={cliente.email}/>
                 </div>
 
                 <div className="campo">
@@ -159,14 +183,15 @@ function NuevoCliente() {
                     <input type="tel"
                         placeholder="Teléfono Cliente"
                         name="telefono"
-                        onChange={actualizarState} />
+                        onChange={actualizarState} 
+                        value={cliente.telefono}/>
                 </div>
 
                 <div className="enviar">
                     <input
                         type="submit"
                         className="btn btn-azul"
-                        value="Agregar Cliente"
+                        value="Guardar Cambios"
                         disabled={validarCliente()}
                     />
                 </div>
@@ -177,5 +202,4 @@ function NuevoCliente() {
 }
 
 
-
-export default  NuevoCliente
+export default  EditarCliente
