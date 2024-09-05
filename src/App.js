@@ -36,7 +36,7 @@ function App(){
 
               <Route exact path="/productos" Component={Productos} />
               <Route exact path="/productos/nuevo" Component={NuevoProducto} />
-              <Route exact path="/productos/editar" Component={EditarProductos} />
+              <Route exact path="/productos/editar/:id" Component={EditarProductos} />
               
               <Route exact path="/pedidos" Component={Pedidos} />
             </Routes>

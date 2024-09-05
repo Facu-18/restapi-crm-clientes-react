@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Fragment} from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 
 // importar cliente axios
 import clienteAxios from '../../config/axios.js'
@@ -6,48 +6,53 @@ import clienteAxios from '../../config/axios.js'
 import Cliente from './Cliente.js';
 
 import { Link } from 'react-router-dom';
+import Spinner from '../layout/Spinner.js';
 
-function Clientes()  {
-   
-   // Trabajar con el state
-   // clientes = state, guardar clientes = funcion para guardar el state
-   const [clientes, guardarClientes] = useState([])
+function Clientes() {
 
-   // query a la api
-   const consultarAPI = async ()=>{
-      const clientesConsulta = await clienteAxios.get('/clientes')
-   
-      // resultado en el state
-      guardarClientes(clientesConsulta.data)
-   }
+  // Trabajar con el state
+  // clientes = state, guardar clientes = funcion para guardar el state
+  const [clientes, guardarClientes] = useState([])
 
-   // use effect
-   useEffect( () => {
-       consultarAPI();
-   }, [clientes]);
+  // query a la api
+  const consultarAPI = async () => {
+    const clientesConsulta = await clienteAxios.get('/clientes')
 
-   return (
+    // resultado en el state
+    guardarClientes(clientesConsulta.data)
+  }
+
+  // use effect
+  useEffect(() => {
+    consultarAPI();
+  }, [clientes]);
+
+  if(!clientes.length){
+    return <Spinner/>
+  }
+
+  return (
     <Fragment>
       <h2>Clientes</h2>
 
-      <Link to={"/clientes/nuevo"} className="btn btn-verde nvo-cliente"> 
-      <i className="fas fa-plus-circle"></i>
-                Nuevo Cliente
+      <Link to={"/clientes/nuevo"} className="btn btn-verde nvo-cliente">
+        <i className="fas fa-plus-circle"></i>
+        Nuevo Cliente
       </Link>
 
-      
+
       <ul className='listado-cliente'>
-      {clientes.map((cliente) => (
+        {clientes.map((cliente) => (
           <Cliente
             key={cliente._id}
             cliente={cliente}
           />
         ))}
       </ul>
-    
+
     </Fragment>
-    
-   )
+
+  )
 }
 
 export default Clientes

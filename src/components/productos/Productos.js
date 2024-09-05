@@ -1,5 +1,6 @@
 import React, {useEffect, useState, Fragment} from 'react';
 import { Link } from 'react-router-dom';
+import Spinner from '../layout/Spinner.js'
 
 // importar cliente axios
 import clienteAxios from '../../config/axios.js'
@@ -24,8 +25,14 @@ function Productos()  {
       // llamar API
       consultarAPI()
    
-   }, [])
+   }, [productos])
    
+   // spinner de carga
+
+   if(!productos.length){
+      return <Spinner/>
+   }
+
    return (
     <Fragment>
       <h2>Productos</h2>
