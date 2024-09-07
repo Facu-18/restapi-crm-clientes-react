@@ -76,7 +76,10 @@ function NuevoPedido() {
                 <ul className="resumen">
                 
                     {productos.map((producto, index)=>(
-                        <FormCantidadProcuto/>
+                        <FormCantidadProcuto
+                           key={producto.producto}
+                           producto={producto}
+                        />
                     ))}
                 
                 </ul>

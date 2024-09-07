@@ -1,16 +1,18 @@
 import React from 'react';
 
-function FormCantidadProcuto() {
+function FormCantidadProcuto({producto}) {
     return (
         <li>
             <div className="texto-producto">
-                <p className="nombre">Macbook Pro</p>
-                <p className="precio">$250</p>
+                <p className="nombre">{producto.nombre}</p>
+                <p className="precio">${producto.precio}</p>
             </div>
             <div className="acciones">
                 <div className="contenedor-cantidad">
                     <i className="fas fa-minus"></i>
-                    <input type="text" name="cantidad" />
+                    
+                    <p>{producto.cantidad}</p>
+                    
                     <i className="fas fa-plus"></i>
                 </div>
                 <button type="button" className="btn btn-rojo">
