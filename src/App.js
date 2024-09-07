@@ -18,6 +18,7 @@ import Pedidos from "./components/pedidos/Pedidos.js";
 import Productos from "./components/productos/Productos.js";
 import NuevoProducto from "./components/productos/NuevoProducto.js";
 import EditarProductos from "./components/productos/EditarProducto.js";
+import NuevoPedido from "./components/pedidos/NuevoPedido.js";
 
 function App(){
   return(
@@ -39,6 +40,7 @@ function App(){
               <Route exact path="/productos/editar/:id" Component={EditarProductos} />
               
               <Route exact path="/pedidos" Component={Pedidos} />
+              <Route exact path="/pedidos/nuevo/:id" Component={NuevoPedido} />
             </Routes>
           </main>
       </div>
