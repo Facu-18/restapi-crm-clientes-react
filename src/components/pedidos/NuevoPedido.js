@@ -58,6 +58,7 @@ function NuevoPedido() {
       guardarBusqueda(e.target.value);
     }
 
+    
     return (
 
         <Fragment>
