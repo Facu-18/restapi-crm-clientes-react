@@ -1,10 +1,16 @@
-import React,{Fragment, useState, useEffect}from 'react';
+import React,{Fragment, useState, useEffect, useContext}from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import clientesAxios from '../../config/axios.js';
 
+// context
+import { CRMContext } from '../../context/CRMContext.js';
+
 function Login(){
     
+    // auth y token
+    const [auth, guardarAuth] = useContext(CRMContext);
+
     const navigate = useNavigate();
 
     // state con los datos del formulario
@@ -22,6 +28,12 @@ function Login(){
             const {token} = respuesta.data;
             localStorage.setItem('token', token);
 
+            // colocar en el state
+            guardarAuth({
+                token, 
+                auth: true
+            })
+            
             // alerta
             Swal.fire(
                 'Bienvenido',

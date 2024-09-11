@@ -1,34 +1,56 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useContext } from 'react';
 
 // importar cliente axios
 import clienteAxios from '../../config/axios.js'
 // Componentes
 import Cliente from './Cliente.js';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Spinner from '../layout/Spinner.js';
 
+// imporar el context
+import { CRMContext } from '../../context/CRMContext.js';
+
 function Clientes() {
+
+  const navigate = useNavigate()
 
   // Trabajar con el state
   // clientes = state, guardar clientes = funcion para guardar el state
   const [clientes, guardarClientes] = useState([])
 
-  // query a la api
-  const consultarAPI = async () => {
-    const clientesConsulta = await clienteAxios.get('/clientes')
+  // utilizar valores del context
+  const [auth, guardarAuth] = useContext(CRMContext)
 
-    // resultado en el state
-    guardarClientes(clientesConsulta.data)
-  }
-
-  // use effect
   useEffect(() => {
-    consultarAPI();
-  }, [clientes]);
+    if (auth.token !== '') {
+      const consultarAPI = async () => {
+        try {
+          const clientesConsulta = await clienteAxios.get('/clientes', {
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          })
+  
+          // resultado en el state
+          guardarClientes(clientesConsulta.data)
+        }
+        catch (error) {
+          // error con autorizacion
+          if (error.response.status === 500) {
+            navigate('/iniciar-sesion')
+          }
+        }
+      }
+      consultarAPI();
+    } else {
+      navigate('/iniciar-sesion')
+    }
+  }, [auth.token, clientes]);
 
-  if(!clientes.length){
-    return <Spinner/>
+
+  if (!clientes.length) {
+    return <Spinner />
   }
 
   return (
