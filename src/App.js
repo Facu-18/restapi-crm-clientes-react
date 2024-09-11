@@ -20,6 +20,8 @@ import NuevoProducto from "./components/productos/NuevoProducto.js";
 import EditarProductos from "./components/productos/EditarProducto.js";
 import NuevoPedido from "./components/pedidos/NuevoPedido.js";
 
+import Login from "./components/auth/Login.js";
+
 function App(){
   return(
    <Router>
@@ -41,6 +43,8 @@ function App(){
               
               <Route exact path="/pedidos" Component={Pedidos} />
               <Route exact path="/pedidos/nuevo/:id" Component={NuevoPedido} />
+
+              <Route exact path="/iniciar-sesion" Component={Login}/>
             </Routes>
           </main>
       </div>
